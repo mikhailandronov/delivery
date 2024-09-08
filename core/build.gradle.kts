@@ -1,11 +1,9 @@
-plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    alias(libs.plugins.kotlin.jvm)
+repositories {
+    mavenCentral()
 }
 
-repositories {
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
+plugins {
+    alias(libs.plugins.kotlin.jvm)
 }
 
 dependencies {
