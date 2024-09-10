@@ -7,22 +7,19 @@ plugins {
 }
 
 dependencies {
-    // Use the Kotlin JUnit 5 integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
 
-    // Use the JUnit 5 integration.
-    testImplementation(libs.junit.jupiter.engine)
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // testImplementation(libs.junit.jupiter.engine)
+    testImplementation(kotlin("test"))
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(19)
     }
 }
 
-tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
+tasks.test {
     useJUnitPlatform()
 }
