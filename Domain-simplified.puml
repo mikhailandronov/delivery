@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'!pragma layout smetana
+'left to right direction
+
+class DeliveryOrder{
+    /status: DeliveryOrderStatus
+}
+
+class Courier {
+    firstName
+    lastName
+    /status: CourierStatus
+}
+
+class TransportType{
+    id
+    name
+    speed
+}
+class Адрес  {
+    город
+    улица
+    дом
+    квартира
+}
+hide Адрес
+
+struct Location{
+    x
+    y
+}
+class Customer {
+    firstName
+    lastName
+}
+
+class DeliveryOrderAssignment{
+    status: AssignmentStatus
+}
+
+Courier -r-> Location
+Courier -d-> TransportType
+DeliveryOrderAssignment --> Courier
+DeliveryOrderAssignment -r-> DeliveryOrder
+DeliveryOrder -r-> Customer : receiver
+DeliveryOrder -d-> Location
+
+enum DeliveryOrderStatus {
+ЖдетНазначения
+Назначена
+Доставлена
+}
+
+enum CourierStatus {
+Свободен
+Занят
+}
+
+enum AssignmentStatus {
+    Создано
+    Выполняется
+    Выполнено
+    Отменено
+}
+
+TransportType -d[hidden]--> DeliveryOrderStatus
+DeliveryOrderStatus -[hidden]> CourierStatus
+CourierStatus -[hidden]> AssignmentStatus
+
+@enduml
