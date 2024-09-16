@@ -12,6 +12,9 @@ dependencies {
 
     // testImplementation(libs.junit.jupiter.engine)
     testImplementation(kotlin("test"))
+    testImplementation (libs.kotest.runner.junit5)
+    testImplementation (libs.kotest.assertions.core)
+    testImplementation (libs.kotest.assertions.arrow)
 }
 
 java {

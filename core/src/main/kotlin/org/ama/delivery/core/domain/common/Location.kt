@@ -11,8 +11,8 @@ data class Location internal constructor(
     private val x: Int,
     private val y: Int,
 ) : ValueObject {
-    fun xToIntValue() = x
-    fun yToIntValue() = y
+    fun xToInt() = x
+    fun yToInt() = y
 
     companion object {
         fun minLocation() = Location(1, 1)
@@ -20,21 +20,21 @@ data class Location internal constructor(
 
         fun from(x: Int, y: Int): Either<LocationError, Location> = either {
             ensure( // require() ?
-                x >= minLocation().xToIntValue() &&
-                        x <= maxLocation().xToIntValue()
+                x >= minLocation().xToInt() &&
+                        x <= maxLocation().xToInt()
             ) { LocationError.IncorrectCoordinates }
 
             ensure( // require() ?
-                y >= minLocation().yToIntValue() &&
-                        y <= maxLocation().yToIntValue()
+                y >= minLocation().yToInt() &&
+                        y <= maxLocation().yToInt()
             ) { LocationError.IncorrectCoordinates }
 
             Location(x, y)
         }
 
         fun random(): Location {
-            val x = Random.nextInt(minLocation().xToIntValue(), maxLocation().xToIntValue())
-            val y = Random.nextInt(minLocation().yToIntValue(), maxLocation().yToIntValue())
+            val x = Random.nextInt(minLocation().xToInt(), maxLocation().xToInt())
+            val y = Random.nextInt(minLocation().yToInt(), maxLocation().yToInt())
             return from(x, y).getOrElse { minLocation() }
         }
     }
