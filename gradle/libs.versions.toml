@@ -5,6 +5,8 @@
 # library versions
 junit-jupiter-engine = "5.10.3"
 arrow = "1.2.4"
+kotest = "5.7.2"
+kotest-arrow = "1.4.0"
 
 # plugin versions
 kotlin-jvm = "2.0.0"
@@ -13,6 +15,9 @@ kotlin-jvm = "2.0.0"
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+kotest-runner-junit5 = {module = "io.kotest:kotest-runner-junit5", version.ref = "kotest"}
+kotest-assertions-core = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+kotest-assertions-arrow = {module = "io.kotest.extensions:kotest-assertions-arrow", version.ref = "kotest-arrow"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-jvm" }

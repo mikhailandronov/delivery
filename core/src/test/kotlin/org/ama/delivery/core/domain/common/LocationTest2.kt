@@ -1,22 +1,27 @@
 package org.ama.delivery.core.domain.common
 
 import arrow.core.getOrElse
-import kotlin.test.*
+import io.kotest.assertions.arrow.core.shouldBeLeft
+import io.kotest.assertions.arrow.core.shouldBeRight
+import kotlin.test.Test
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 
-class LocationTest {
-
+class LocationTest2 {
     @Test
     fun `Should create location with correct values`() {
         // Given
         val correctX = 5
         val correctY = 9
+
         // When
-        val createdLocation = Location.from(correctX, correctY)
+        val result = Location.from(correctX, correctY)
+
         // Then
-        assertTrue(createdLocation.isRight(), "Should return Location as right")
-        assertFalse(createdLocation.isLeft(), "Should not return anything as left")
-        assertEquals(correctX, createdLocation.getOrNull()?.xToInt(), "Incorrect X coordinate")
-        assertEquals(correctY, createdLocation.getOrNull()?.yToInt(), "Incorrect Y coordinate")
+        val createdLocation = result.shouldBeRight()
+        createdLocation.xToInt() shouldBe correctX
+        createdLocation.yToInt() shouldBe correctY
     }
 
     @Test
@@ -42,11 +47,7 @@ class LocationTest {
                     // When
                     val createdLocation = Location.from(incorrectX, incorrectY)
                     // Then
-                    assertTrue(createdLocation.isLeft(), "Should return an error as left")
-                    assertFalse(createdLocation.isRight(), "Should not return anything as right")
-                    assertIs<LocationError.IncorrectCoordinates>(
-                        createdLocation.leftOrNull(), "Incorrect error type"
-                    )
+                    createdLocation.shouldBeLeft(LocationError.IncorrectCoordinates)
                 }
     }
 
@@ -58,9 +59,8 @@ class LocationTest {
         val loc3 = Location.from(2, 1).getOrNull()
         // When
         // Then
-        assertEquals(loc1, loc2, "loc1 and loc2 should be equal")
-        assertNotEquals(loc1, loc3, "loc1 and loc3 should not be equal")
-        assertTrue(loc2 != loc3, "loc2 and loc3 should not be equal")
+        loc1 shouldBe loc2
+        loc1 shouldNotBe loc3
     }
 
     @Test
@@ -73,8 +73,8 @@ class LocationTest {
         val distNonZero = loc1.distanceTo(loc2)
         val distZero = loc2.distanceTo(loc3)
         // Then
-        assertEquals(5, distNonZero, "Distance should be 5")
-        assertEquals(0, distZero, "Distance should be 0")
+        distZero shouldBe 0
+        distNonZero shouldBe 5
     }
 
     @Test
@@ -82,6 +82,6 @@ class LocationTest {
         // When
         val location = Location.random()
         // Then
-        assertIs<Location>(location, "Random location object should be Location")
+        location.shouldBeInstanceOf<Location>()
     }
 }
