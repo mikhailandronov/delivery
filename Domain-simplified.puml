@@ -5,12 +5,15 @@
 'left to right direction
 
 class DeliveryOrder{
+    id: uuid
+    destination: Location
     /status: DeliveryOrderStatus
 }
 
 class Courier {
-    firstName
-    lastName
+    id: uuid
+    name: String
+    location: Location
     /status: CourierStatus
 }
 
@@ -19,13 +22,13 @@ class TransportType{
     name
     speed
 }
-class Адрес  {
-    город
-    улица
-    дом
-    квартира
+class Address  {
+    city
+    street
+    building
+    flat
 }
-hide Адрес
+hide Address
 
 struct Location{
     x
@@ -40,12 +43,13 @@ class DeliveryOrderAssignment{
     status: AssignmentStatus
 }
 
-Courier -r-> Location
+'DeliveryOrder -d-> Location
+'Courier -r-> Location
+
 Courier -d-> TransportType
-DeliveryOrderAssignment --> Courier
+DeliveryOrderAssignment --* Courier
 DeliveryOrderAssignment -r-> DeliveryOrder
 DeliveryOrder -r-> Customer : receiver
-DeliveryOrder -d-> Location
 
 enum DeliveryOrderStatus {
 ЖдетНазначения
@@ -68,5 +72,6 @@ enum AssignmentStatus {
 TransportType -d[hidden]--> DeliveryOrderStatus
 DeliveryOrderStatus -[hidden]> CourierStatus
 CourierStatus -[hidden]> AssignmentStatus
+AssignmentStatus -[hidden]> Location
 
 @enduml
