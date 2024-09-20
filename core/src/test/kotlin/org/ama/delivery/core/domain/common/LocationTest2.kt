@@ -3,6 +3,7 @@ package org.ama.delivery.core.domain.common
 import arrow.core.getOrElse
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
+import io.kotest.matchers.ints.shouldBeInRange
 import kotlin.test.Test
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -83,5 +84,13 @@ class LocationTest2 {
         val location = Location.random()
         // Then
         location.shouldBeInstanceOf<Location>()
+        location.xToInt() shouldBeInRange (IntRange(
+            Location.minLocation().xToInt(),
+            Location.maxLocation().xToInt())
+        )
+        location.yToInt() shouldBeInRange (IntRange(
+            Location.minLocation().yToInt(),
+            Location.maxLocation().yToInt())
+        )
     }
 }
