@@ -5,16 +5,34 @@
 'left to right direction
 
 class DeliveryOrder{
-    id: uuid
-    destination: Location
-    /status: DeliveryOrderStatus
+    + id: uuid
+    + destination: Location
+    - status: DeliveryOrderStatus
+
+    create(id: DeliveryOrderId, destination: Location)
+    <font color=red>setStatusByAssignment(a: DeliveryOrderAssignment)</font>
+    status(): DeliveryOrderStatus
 }
 
 class Courier {
-    id: uuid
-    name: String
-    location: Location
-    /status: CourierStatus
+    + id: uuid
+    + name: String
+    - location: Location
+
+    create(name: String, transportType: TransportType, location: Location)
+    location(): Location
+
+    assignOrder(order: DeliveryOrder)
+    getAssignments(): List<DeliveryOrderAssignment>
+
+    startNextDelivery()
+    getCurrentDeliveryOrderId()
+    completeCurrentDelivery()
+    cancelDeliveryOrder(orderId: DeliveryOrderId)
+    status(): CourierStatus
+
+    estimateTimeToReachLocation(targetLocation: Location): Int
+    stepToCurrentDeliveryDestination()
 }
 
 class TransportType{
@@ -34,20 +52,24 @@ struct Location{
     x
     y
 }
+
 class Customer {
     firstName
     lastName
 }
+hide Customer
 
 class DeliveryOrderAssignment{
-    status: AssignmentStatus
+    + id: uuid
+    + orderDestination: Location
+    - status: AssignmentStatus
+    create(order: DeliveryOrder, courier: Courier)
+    setStatus(newStatus: AssignmentStatus)
+    status(): AssignmentStatus
 }
 
-'DeliveryOrder -d-> Location
-'Courier -r-> Location
-
-Courier -d-> TransportType
-DeliveryOrderAssignment --* Courier
+Courier -r-> TransportType
+DeliveryOrderAssignment -u-o Courier
 DeliveryOrderAssignment -r-> DeliveryOrder
 DeliveryOrder -r-> Customer : receiver
 
@@ -69,9 +91,10 @@ enum AssignmentStatus {
     Отменено
 }
 
-TransportType -d[hidden]--> DeliveryOrderStatus
-DeliveryOrderStatus -[hidden]> CourierStatus
-CourierStatus -[hidden]> AssignmentStatus
-AssignmentStatus -[hidden]> Location
+
+ DeliveryOrderAssignment -d[hidden]-> AssignmentStatus
+ AssignmentStatus -r[hidden]-> DeliveryOrderStatus
+ DeliveryOrderStatus -[hidden]> CourierStatus
+ AssignmentStatus -l[hidden]> Location
 
 @enduml
