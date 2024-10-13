@@ -5,13 +5,34 @@
 'left to right direction
 
 class DeliveryOrder{
-    /status: DeliveryOrderStatus
+    + id: uuid
+    + destination: Location
+    - status: DeliveryOrderStatus
+
+    create(id: DeliveryOrderId, destination: Location)
+    deriveStatusFromCourier(courier: Courier)
+    status(): DeliveryOrderStatus
 }
 
 class Courier {
-    firstName
-    lastName
-    /status: CourierStatus
+    + id: uuid
+    + name: String
+    - location: Location
+
+    create(name: String, transportType: TransportType, location: Location)
+    location(): Location
+
+    assignOrder(order: DeliveryOrder)
+    getAssignments(): List<DeliveryOrderAssignment>
+
+    startNextDelivery()
+    getCurrentDeliveryOrderId()
+    completeCurrentDelivery()
+    cancelDeliveryOrder(orderId: DeliveryOrderId)
+    status(): CourierStatus
+
+    estimateTimeToReachLocation(targetLocation: Location): Int
+    stepToCurrentDeliveryDestination()
 }
 
 class TransportType{
@@ -19,38 +40,44 @@ class TransportType{
     name
     speed
 }
-class Адрес  {
-    город
-    улица
-    дом
-    квартира
+class Address  {
+    city
+    street
+    building
+    flat
 }
-hide Адрес
+hide Address
 
 struct Location{
     x
     y
 }
+
 class Customer {
     firstName
     lastName
 }
+hide Customer
 
 class DeliveryOrderAssignment{
-    status: AssignmentStatus
+    + id: uuid
+    + orderDestination: Location
+    - status: AssignmentStatus
+    create(order: DeliveryOrder, courier: Courier)
+    setStatus(newStatus: AssignmentStatus)
+    status(): AssignmentStatus
 }
 
-Courier -r-> Location
-Courier -d-> TransportType
-DeliveryOrderAssignment --> Courier
+Courier -r-> TransportType
+DeliveryOrderAssignment -u-o Courier
 DeliveryOrderAssignment -r-> DeliveryOrder
 DeliveryOrder -r-> Customer : receiver
-DeliveryOrder -d-> Location
 
 enum DeliveryOrderStatus {
 ЖдетНазначения
 Назначена
 Доставлена
+Возвращена отправителю
 }
 
 enum CourierStatus {
@@ -65,8 +92,10 @@ enum AssignmentStatus {
     Отменено
 }
 
-TransportType -d[hidden]--> DeliveryOrderStatus
-DeliveryOrderStatus -[hidden]> CourierStatus
-CourierStatus -[hidden]> AssignmentStatus
+
+ DeliveryOrderAssignment -d[hidden]-> AssignmentStatus
+ AssignmentStatus -r[hidden]-> DeliveryOrderStatus
+ DeliveryOrderStatus -[hidden]> CourierStatus
+ AssignmentStatus -l[hidden]> Location
 
 @enduml
