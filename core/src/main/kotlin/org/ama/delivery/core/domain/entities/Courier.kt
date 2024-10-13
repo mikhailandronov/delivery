@@ -15,7 +15,7 @@ class Courier private constructor(
     val transportType: TransportType,
     private var location: Location,
     private val assignments: MutableList<DeliveryOrderAssignment> = mutableListOf()
-) {
+): AggregateRoot {
 
     companion object {
         fun create(
@@ -50,7 +50,7 @@ class Courier private constructor(
 
     fun startNextDelivery(): Either<DeliveryProcessingError, Unit> = either {
         if (status() != CourierStatus.Free) raise(DeliveryProcessingError.CourierIsBusy)
-        val assignmentToDeliver = assignments.find { it.status() == AssignmentStatus.Created }
+        val assignmentToDeliver = getAssignments().find { it.status() == AssignmentStatus.Created }
         if (assignmentToDeliver == null) raise(DeliveryProcessingError.NoAssignmentsToDeliver)
         assignmentToDeliver.setStatus(AssignmentStatus.OnTheWay)
     }
@@ -65,7 +65,7 @@ class Courier private constructor(
             ?: raise(DeliveryProcessingError.NoCurrentDelivery)
     }
 
-    fun cancelDeliveryOrder(orderId: DeliveryOrderId): Either<DeliveryProcessingError, Unit> = either {
+    fun cancelDeliveryOrderAssignment(orderId: DeliveryOrderId): Either<DeliveryProcessingError, Unit> = either {
         val orderAssignments = getAssignments().filter { it.orderId == orderId }
 
         if (orderAssignments.isEmpty())
@@ -81,12 +81,14 @@ class Courier private constructor(
     fun stepToCurrentDeliveryDestination() : Either<DeliveryProcessingError, Unit> = either {
         val destination = currentDelivery()?.orderDestination
             ?: raise(DeliveryProcessingError.NoCurrentDelivery)
+
         var newX = location().xToInt()
         var newY = location().yToInt()
         var xDiff = destination.xToInt() - newX
         var yDiff = destination.yToInt() - newY
         val stepsAllowed = transportType.speed
         var curStep = 0
+
         while (curStep < stepsAllowed){
             if (abs(xDiff) > 0){
                 newX += (xDiff / abs(xDiff))

@@ -92,7 +92,7 @@ class CourierTest{
         courier.status() shouldBe CourierStatus.Free
         courier.getCurrentDeliveryOrderId().shouldBeLeft(DeliveryProcessingError.NoCurrentDelivery)
 
-        courier.cancelDeliveryOrder(orderId).shouldBeLeft(DeliveryProcessingError.CantCancelDeliveredOrder)
+        courier.cancelDeliveryOrderAssignment(orderId).shouldBeLeft(DeliveryProcessingError.CantCancelDeliveredOrder)
         courier.status() shouldBe CourierStatus.Free
 
         val newOrderId = DeliveryOrderId.new()
@@ -102,7 +102,7 @@ class CourierTest{
         courier.startNextDelivery().shouldBeRight()
         courier.status() shouldBe CourierStatus.Busy
 
-        courier.cancelDeliveryOrder(newOrderId).shouldBeRight()
+        courier.cancelDeliveryOrderAssignment(newOrderId).shouldBeRight()
         courier.status() shouldBe CourierStatus.Free
     }
 
